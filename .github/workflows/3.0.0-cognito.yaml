@@ -34,5 +34,5 @@ jobs:
 
       - name: Deploy cognito stack
         run: |
-          pnpm dlx cdk deploy --app "npx ts-node bin/cognito-app.ts" cognito-stack \
+          pnpm dlx cdk deploy --app "npx ts-node bin/foundation-cognito-app.ts" cognito-stack \
           --require-approval never
