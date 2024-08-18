@@ -24,11 +24,11 @@ jobs:
         with:
           node-version: 20
 
-      - name: Configure AWS Credentials for ${{ matrix.aws_account.id }} ${{ matrix.aws_region }}
+      - name: Configure AWS Credentials for ${{ matrix.aws_account.name }} ${{ matrix.aws_region }}
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::${{ matrix.aws_account.id }}:role/github-action-deploy-role
           aws-region: ${{ matrix.aws_region }}
 
-      - name: Bootstrap ${{ matrix.aws_account.name }} ${{ matrix.aws_account.id }} ${{ matrix.aws_region }}
+      - name: Bootstrap ${{ matrix.aws_account.name }} ${{ matrix.aws_region }}
         run: npx cdk bootstrap aws://${{ matrix.aws_account.id }}/eu-west-1 --cloudformation-execution-policies arn:aws:iam::aws:policy/AdministratorAccess --region ${{ matrix.aws_region }}
