@@ -1,0 +1,34 @@
+name: 2.0.0 Bootstrap aws accounts
+
+on:
+  workflow_dispatch:
+
+jobs:
+  bootstrap-accounts:
+    permissions:
+      id-token: write
+      contents: read
+      packages: read
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        aws_region: ['eu-north-1']
+        aws_account:
+          - name: 'Capture IT Master Account'
+            id: '608149804197'
+
+    steps:
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Configure AWS Credentials for ${{ matrix.aws_account.id }} ${{ matrix.aws_region }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ matrix.aws_account.id }}:role/github-action-deploy-role
+          aws-region: ${{ matrix.aws_region }}
+
+      - name: Bootstrap ${{ matrix.aws_account.name }} ${{ matrix.aws_account.id }} ${{ matrix.aws_region }}
+        run: npx cdk bootstrap aws://${{ matrix.aws_account.id }}/eu-west-1 --cloudformation-execution-policies arn:aws:iam::aws:policy/AdministratorAccess --region ${{ matrix.aws_region }}
