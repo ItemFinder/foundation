@@ -23,16 +23,13 @@ jobs:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-action-deploy-role
           aws-region: eu-north-1
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 8
-
-      - name: Use Node.js
+      - name: Setup node
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
+
+      - name: enable pnpm
+        run: corepack enable pnpm
 
       - name: install dependencies
         run: pnpm install --frozen-lockfile
