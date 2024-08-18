@@ -29,7 +29,7 @@ export class CognitoStack extends cdk.Stack {
           mutable: false
         },
         phoneNumber: {
-          required: false,
+          required: true,
           mutable: true
         },
         fullname: {
