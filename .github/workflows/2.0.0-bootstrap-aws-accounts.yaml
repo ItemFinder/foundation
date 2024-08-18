@@ -16,7 +16,7 @@ jobs:
         aws_region: ['eu-north-1']
         aws_account:
           - name: 'Capture IT Master Account'
-            id: '608149804197'
+            id: ${{ secrets.AWS_ACCOUNT_ID }}
 
     steps:
       - name: Setup node
