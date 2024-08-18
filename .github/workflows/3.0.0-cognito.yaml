@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  bootstrap-accounts:
+  setup-cognito:
     permissions:
       id-token: write
       contents: read
