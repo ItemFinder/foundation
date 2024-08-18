@@ -16,7 +16,7 @@ jobs:
         aws_region: ['eu-north-1']
         aws_account:
           - name: 'Capture IT Master Account'
-            id: ${{ secrets.AWS_ACCOUNT_ID }}
+            id: AWS_ACCOUNT_ID
 
     steps:
       - name: Setup node
@@ -27,8 +27,8 @@ jobs:
       - name: Configure AWS Credentials for ${{ matrix.aws_account.name }} ${{ matrix.aws_region }}
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${{ matrix.aws_account.id }}:role/github-action-deploy-role
+          role-to-assume: arn:aws:iam::${{ secrets[matrix.aws_account.id] }}:role/github-action-deploy-role
           aws-region: ${{ matrix.aws_region }}
 
       - name: Bootstrap ${{ matrix.aws_account.name }} ${{ matrix.aws_region }}
-        run: npx cdk bootstrap aws://${{ matrix.aws_account.id }}/eu-west-1 --cloudformation-execution-policies arn:aws:iam::aws:policy/AdministratorAccess --region ${{ matrix.aws_region }}
+        run: npx cdk bootstrap aws://${{ secrets[matrix.aws_account.id] }}/${{ matrix.aws_region }} --cloudformation-execution-policies arn:aws:iam::aws:policy/AdministratorAccess --region ${{ matrix.aws_region }}
