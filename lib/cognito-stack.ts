@@ -7,7 +7,7 @@ export class CognitoStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    new cognito.UserPool(this, 'captureituserpool', {
+    const userpool = new cognito.UserPool(this, 'captureituserpool', {
       userPoolName: 'captureit-userpool',
       signInCaseSensitive: false, // case insensitive is preferred in most situations
       selfSignUpEnabled: true,
@@ -47,6 +47,28 @@ export class CognitoStack extends cdk.Stack {
         tempPasswordValidity: cdk.Duration.days(3)
       },
       accountRecovery: cognito.AccountRecovery.EMAIL_ONLY
+    });
+
+    userpool.addClient('captureitclient', {
+      generateSecret: true,
+      authSessionValidity: cdk.Duration.minutes(3),
+      idTokenValidity: cdk.Duration.minutes(60),
+      accessTokenValidity: cdk.Duration.minutes(60),
+      oAuth: {
+        flows: {
+          authorizationCodeGrant: true
+        },
+
+        scopes: [
+          cognito.OAuthScope.EMAIL,
+          cognito.OAuthScope.OPENID,
+          cognito.OAuthScope.PROFILE,
+          cognito.OAuthScope.COGNITO_ADMIN
+        ],
+        callbackUrls: ['https://localhost:5173/api/auth/callback'],
+        logoutUrls: ['https://localhost:3000']
+      },
+      preventUserExistenceErrors: true
     });
   }
 }
