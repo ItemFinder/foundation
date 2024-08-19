@@ -62,7 +62,7 @@ export class CognitoStack extends cdk.Stack {
         scopes: [cognito.OAuthScope.EMAIL, cognito.OAuthScope.OPENID, cognito.OAuthScope.PROFILE],
         callbackUrls: [
           'https://zuqv3m7eo9.execute-api.eu-north-1.amazonaws.com/auth/callback/cognito',
-          'https://localhost:5173/auth/callback/cognito'
+          'http://localhost:5173/auth/callback/cognito'
         ],
         logoutUrls: ['https://localhost:5173']
       },
