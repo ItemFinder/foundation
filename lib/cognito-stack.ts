@@ -59,16 +59,18 @@ export class CognitoStack extends cdk.Stack {
           authorizationCodeGrant: true
         },
 
-        scopes: [
-          cognito.OAuthScope.EMAIL,
-          cognito.OAuthScope.OPENID,
-          cognito.OAuthScope.PROFILE,
-          cognito.OAuthScope.COGNITO_ADMIN
-        ],
+        scopes: [cognito.OAuthScope.EMAIL, cognito.OAuthScope.OPENID, cognito.OAuthScope.PROFILE],
         callbackUrls: ['https://localhost:5173/api/auth/callback'],
         logoutUrls: ['https://localhost:3000']
       },
+
       preventUserExistenceErrors: true
+    });
+
+    userpool.addDomain('captureitdomain', {
+      cognitoDomain: {
+        domainPrefix: 'captureit'
+      }
     });
   }
 }
