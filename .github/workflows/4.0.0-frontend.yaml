@@ -1,0 +1,39 @@
+# Contains backend infrastructure setup for the frontend application
+name: 4.0.0 Frontend
+
+on:
+  workflow_dispatch:
+
+jobs:
+  setup-cognito:
+    permissions:
+      id-token: write
+      contents: read
+      packages: read
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-action-deploy-role
+          aws-region: eu-north-1
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: enable pnpm
+        run: corepack enable pnpm
+
+      - name: install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Deploy cognito stack
+        run: |
+          pnpm dlx cdk deploy --app "npx ts-node bin/frontend-app.ts" foundation-frontend-stack \
+          --require-approval never
