@@ -12,6 +12,7 @@ export class FrontendStack extends cdk.Stack {
     });
 
     new cdk.CfnOutput(this, 'AgreementIdTableName', {
+      key: 'AgreementIdTableName',
       value: agreementIdTable.tableName,
       description: 'The name of the DynamoDB table for storing agreement IDs'
     });
