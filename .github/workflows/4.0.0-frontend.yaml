@@ -33,6 +33,9 @@ jobs:
       - name: install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: build lambda functions
+        run: pnpm run build
+
       - name: Deploy cognito stack
         run: |
           pnpm dlx cdk deploy --app "npx ts-node bin/frontend-app.ts" foundation-frontend-stack \

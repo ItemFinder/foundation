@@ -5,8 +5,7 @@
     "foundation": "bin/foundation.js"
   },
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w",
+    "build": "esbuild src/frontend/agreement-id/generate/index.ts --bundle --platform=node --target=node20 --outdir=dist --format=cjs --sourcemap --external:@aws-sdk --minify-whitespace --minify-syntax",
     "test": "jest",
     "cdk": "cdk"
   },
@@ -14,6 +13,7 @@
     "@types/jest": "^29.5.12",
     "@types/node": "20.14.9",
     "aws-cdk": "2.152.0",
+    "esbuild": "^0.23.1",
     "jest": "^29.7.0",
     "ts-jest": "^29.1.5",
     "ts-node": "^10.9.2",
