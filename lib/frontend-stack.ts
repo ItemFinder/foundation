@@ -12,6 +12,11 @@ export class FrontendStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY
     });
 
+    agreementIdTable.addGlobalSecondaryIndex({
+      indexName: 'AgreementIdIndex',
+      partitionKey: { name: 'agreementId', type: AttributeType.STRING }
+    });
+
     new cdk.CfnOutput(this, 'AgreementIdTableName', {
       key: 'AgreementIdTableName',
       value: agreementIdTable.tableName,
