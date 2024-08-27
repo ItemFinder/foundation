@@ -33,7 +33,7 @@ export class FrontendStack extends cdk.Stack {
     const generateAgreementId = new lambda.Function(this, 'GenerateAgreementId', {
       runtime: lambda.Runtime.NODEJS_20_X,
       handler: 'index.handler',
-      code: lambda.Code.fromAsset('src/frontend/agreement-id/generate'),
+      code: lambda.Code.fromAsset('dist'),
       role: agreementIdTableRole,
       environment: {
         AGREEMENT_ID_TABLE: agreementIdTable.tableName
