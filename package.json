@@ -5,7 +5,7 @@
     "foundation": "bin/foundation.js"
   },
   "scripts": {
-    "build": "esbuild src/frontend/agreement-id/generate/index.ts --bundle --platform=node --target=node20 --outdir=dist --format=cjs --sourcemap --external:@aws-sdk --minify-whitespace --minify-syntax",
+    "build": "esbuild src/frontend/agreement-id/generate/index.ts --bundle --platform=node --target=node20 --outdir=dist --format=cjs --sourcemap --minify-whitespace --minify-syntax",
     "test": "jest",
     "cdk": "cdk"
   },
