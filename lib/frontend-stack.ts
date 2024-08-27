@@ -28,7 +28,7 @@ export class FrontendStack extends cdk.Stack {
           statements: [
             new iam.PolicyStatement({
               actions: ['dynamodb:Query'],
-              resources: [agreementIdTable.tableArn, `${agreementIdTable.tableArn}/index/AgreementIdIndex`]
+              resources: [`${agreementIdTable.tableArn}/index/AgreementIdIndex`]
             })
           ]
         })
