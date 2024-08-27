@@ -19,22 +19,27 @@ export class FrontendStack extends cdk.Stack {
       partitionKey: { name: 'agreementId', type: dynamodb.AttributeType.STRING }
     });
 
-    const agreementIdTablePolicy = new iam.PolicyStatement({
-      actions: ['dynamodb:Query'],
-      resources: [agreementIdTable.tableArn]
+    const generateAgreementIdRole = new iam.Role(this, 'GenerateAgreementIdRole', {
+      assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
+      description: 'Role for the Lambda function that generates agreement IDs',
+      managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole')],
+      inlinePolicies: {
+        aggrementTableQuery: new iam.PolicyDocument({
+          statements: [
+            new iam.PolicyStatement({
+              actions: ['dynamodb:Query'],
+              resources: [agreementIdTable.tableArn]
+            })
+          ]
+        })
+      }
     });
-
-    const agreementIdTableRole = new iam.Role(this, 'AgreementIdTableRole', {
-      assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com')
-    });
-
-    agreementIdTableRole.addToPolicy(agreementIdTablePolicy);
 
     const generateAgreementId = new lambda.Function(this, 'GenerateAgreementId', {
       runtime: lambda.Runtime.NODEJS_20_X,
       handler: 'index.handler',
       code: lambda.Code.fromAsset('dist'),
-      role: agreementIdTableRole,
+      role: generateAgreementIdRole,
       environment: {
         AGREEMENT_ID_TABLE: agreementIdTable.tableName
       }

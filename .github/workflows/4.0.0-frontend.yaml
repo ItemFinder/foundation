@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  setup-cognito:
+  frontend-resources:
     permissions:
       id-token: write
       contents: read
