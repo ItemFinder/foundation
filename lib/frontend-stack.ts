@@ -7,7 +7,8 @@ export class FrontendStack extends cdk.Stack {
     super(scope, id, props);
 
     const agreementIdTable = new TableV2(this, 'AgreementIdTable', {
-      partitionKey: { name: 'agreementId', type: AttributeType.STRING },
+      partitionKey: { name: 'email', type: AttributeType.STRING },
+      sortKey: { name: 'agreementId', type: AttributeType.STRING },
       removalPolicy: cdk.RemovalPolicy.DESTROY
     });
 
