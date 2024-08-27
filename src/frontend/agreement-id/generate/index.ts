@@ -6,7 +6,7 @@ const client = new DynamoDBClient({
 
 const tableName = process.env.AGREEMENT_ID_TABLE;
 
-exports.handler = async (): Promise<{ agreementId: string }> => {
+export const handler = async (): Promise<{ agreementId: string }> => {
   let agreementId: string;
   let isUnique = false;
 
