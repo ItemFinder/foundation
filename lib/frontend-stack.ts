@@ -2,6 +2,8 @@ import * as cdk from 'aws-cdk-lib';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as iam from 'aws-cdk-lib/aws-iam';
+import * as sfn from 'aws-cdk-lib/aws-stepfunctions';
+import * as tasks from 'aws-cdk-lib/aws-stepfunctions-tasks';
 import { Construct } from 'constructs';
 
 export class FrontendStack extends cdk.Stack {
@@ -46,6 +48,32 @@ export class FrontendStack extends cdk.Stack {
       }
     });
 
+    const completeCompanyRegistrationRole = new iam.Role(this, 'CompleteCompanyRegistrationRole', {
+      assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
+      description: 'Role for the Lambda function that completes the company registration',
+      managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole')],
+      inlinePolicies: {
+        aggrementTableQuery: new iam.PolicyDocument({
+          statements: [
+            new iam.PolicyStatement({
+              actions: ['dynamodb:UpdateItemCommand'],
+              resources: [companyTable.tableArn]
+            })
+          ]
+        })
+      }
+    });
+
+    const completeCompanyRegistration = new lambda.Function(this, 'CompleteCompanyRegistration', {
+      runtime: lambda.Runtime.NODEJS_20_X,
+      handler: 'index.handler',
+      code: lambda.Code.fromAsset('dist/complete-company-registration'),
+      role: generateAgreementIdRole,
+      environment: {
+        COMPANY_TABLE: companyTable.tableName
+      }
+    });
+
     const checkAgreementIdRole = new iam.Role(this, 'CheckAgreementIdRole', {
       assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
       description: 'Role for the Lambda function that check for an agreement ID in the database',
@@ -70,6 +98,11 @@ export class FrontendStack extends cdk.Stack {
       environment: {
         COMPANY_TABLE: companyTable.tableName
       }
+    });
+
+    const checkAgreementIdTask = new tasks.LambdaInvoke(this, 'CheckAgreementIdTask', {
+      lambdaFunction: checkAgreementId,
+      outputPath: '$.Payload'
     });
 
     const addCompanyInfoRole = new iam.Role(this, 'AddCompanyInfoRole', {
@@ -98,6 +131,11 @@ export class FrontendStack extends cdk.Stack {
       }
     });
 
+    const addCompanyInfoTask = new tasks.LambdaInvoke(this, 'AddCompanyInfoTask', {
+      lambdaFunction: addCompanyInfo,
+      outputPath: '$.Payload'
+    });
+
     const checkConfirmationRole = new iam.Role(this, 'CheckConfirmationRole', {
       assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
       description: 'Role for the Lambda function checks if the company registration is complete',
@@ -122,6 +160,37 @@ export class FrontendStack extends cdk.Stack {
       environment: {
         COMPANY_TABLE: companyTable.tableName
       }
+    });
+
+    const checkConfirmationTask = new tasks.LambdaInvoke(this, 'CheckConfirmationTask', {
+      lambdaFunction: checkConfirmation,
+      outputPath: '$.Payload'
+    });
+
+    const endstate = new sfn.Pass(this, 'Endstate');
+
+    const wait10s = new sfn.Wait(scope, 'Wait10s', {
+      time: sfn.WaitTime.duration(cdk.Duration.seconds(10))
+    });
+
+    // prettier-ignore
+    const outboundChain = sfn.Chain.start(
+      checkAgreementIdTask
+        .next(new sfn.Choice(scope, 'IsAgreementIdPresent?')
+          .when(sfn.Condition.booleanEquals('$.output.agreementIdFound', false), endstate)
+          .otherwise(
+            addCompanyInfoTask
+              .next(new sfn.Choice(scope, 'IsCompanyRegistrationDone?')
+                .when(sfn.Condition.booleanEquals('$.output.companyRegistrationDone', true), endstate)
+                .otherwise(checkConfirmationTask.next(wait10s))
+              )
+          )
+        )
+    );
+
+    const companyRegistrationStateMachine = new sfn.StateMachine(this, 'CompanyRegistrationStateMachine', {
+      stateMachineName: 'CompanyRegistrationStateMachine',
+      definitionBody: sfn.DefinitionBody.fromChainable(outboundChain)
     });
 
     //#endregion
@@ -154,6 +223,18 @@ export class FrontendStack extends cdk.Stack {
       key: 'CheckConfirmationFunctionName',
       value: checkConfirmation.functionName,
       description: 'The name of the Lambda function for checking company registration'
+    });
+
+    new cdk.CfnOutput(this, 'CompleteCompanyRegistrationFunctionName', {
+      key: 'CheckConfirCompleteCompanyRegistrationFunctionNamemationFunctionName',
+      value: completeCompanyRegistration.functionName,
+      description: 'The name of the Lambda function that completes company registration'
+    });
+
+    new cdk.CfnOutput(this, 'CompanyRegistrationStateMachineArn', {
+      key: 'CompanyRegistrationStateMachineArn',
+      value: companyRegistrationStateMachine.stateMachineArn,
+      description: 'The ARN of the Step Functions state machine for company registration'
     });
   }
 }
