@@ -176,16 +176,18 @@ export class FrontendStack extends cdk.Stack {
     // prettier-ignore
     const outboundChain = sfn.Chain.start(
       checkAgreementIdTask
-        .next(new sfn.Choice(scope, 'IsAgreementIdPresent?')
-          .when(sfn.Condition.booleanEquals('$.output.agreementIdFound', false), endstate)
-          .otherwise(
-            addCompanyInfoTask
-              .next(new sfn.Choice(scope, 'IsCompanyRegistrationDone?')
-                .when(sfn.Condition.booleanEquals('$.output.companyRegistrationDone', true), endstate)
-                .otherwise(checkConfirmationTask.next(wait10s))
-              )
+      .next(new sfn.Choice(scope, 'IsAgreementIdPresent?')
+        .when(sfn.Condition.booleanEquals('$.output.agreementIdFound', false), endstate)
+        .otherwise(
+          addCompanyInfoTask
+          .next(checkConfirmationTask
+            .next(new sfn.Choice(scope, 'IsCompanyRegistrationDone?')
+              .when(sfn.Condition.booleanEquals('$.output.companyRegistrationDone', true), endstate)
+              .otherwise(wait10s.next(checkConfirmationTask))
+            )
           )
         )
+      )
     );
 
     const companyRegistrationStateMachine = new sfn.StateMachine(this, 'CompanyRegistrationStateMachine', {
