@@ -41,7 +41,7 @@ export const handler = async (event: InputEvent): Promise<OutputEvent> => {
       agreementId: { S: event.input.agreementId }
     },
     UpdateExpression:
-      'SET companyName = :companyName, countryCode: countryCode, phoneNumber = :phoneNumber, confirmed = :confirmed',
+      'SET companyName = :companyName, countryCode = :countryCode, phoneNumber = :phoneNumber, confirmed = :confirmed',
     ExpressionAttributeValues: {
       ':companyName': { S: event.input.companyName },
       ':countryCode': { S: event.input.countryCode },
