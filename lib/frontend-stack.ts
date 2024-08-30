@@ -56,7 +56,7 @@ export class FrontendStack extends cdk.Stack {
         aggrementTableQuery: new iam.PolicyDocument({
           statements: [
             new iam.PolicyStatement({
-              actions: ['dynamodb:UpdateItemCommand'],
+              actions: ['dynamodb:UpdateItem'],
               resources: [companyTable.tableArn]
             })
           ]
@@ -113,7 +113,7 @@ export class FrontendStack extends cdk.Stack {
         aggrementTableQuery: new iam.PolicyDocument({
           statements: [
             new iam.PolicyStatement({
-              actions: ['dynamodb:UpdateItemCommand'],
+              actions: ['dynamodb:UpdateItem'],
               resources: [companyTable.tableArn]
             })
           ]
