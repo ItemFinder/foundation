@@ -18,6 +18,7 @@ interface InputEvent {
     adminEmail: string;
     companyName: string;
     phoneNumber: string;
+    countryCode: string;
   };
   output: {
     agreementIdFound: boolean;
@@ -39,9 +40,11 @@ export const handler = async (event: InputEvent): Promise<OutputEvent> => {
       email: { S: event.input.adminEmail },
       agreementId: { S: event.input.agreementId }
     },
-    UpdateExpression: 'SET companyName = :companyName, phoneNumber = :phoneNumber, confirmed = :confirmed',
+    UpdateExpression:
+      'SET companyName = :companyName, countryCode: countryCode, phoneNumber = :phoneNumber, confirmed = :confirmed',
     ExpressionAttributeValues: {
       ':companyName': { S: event.input.companyName },
+      ':countryCode': { S: event.input.countryCode },
       ':phoneNumber': { S: event.input.phoneNumber },
       ':confirmed': { BOOL: false }
     }

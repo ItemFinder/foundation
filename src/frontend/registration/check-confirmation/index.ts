@@ -18,6 +18,7 @@ interface InputEvent {
     adminEmail: string;
     companyName: string;
     phoneNumber: string;
+    countryCode: string;
   };
   output: {
     agreementIdFound: boolean;
