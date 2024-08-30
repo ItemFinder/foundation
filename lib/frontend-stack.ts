@@ -42,7 +42,7 @@ export class FrontendStack extends cdk.Stack {
       code: lambda.Code.fromAsset('dist'),
       role: generateAgreementIdRole,
       environment: {
-        AGREEMENT_ID_TABLE: companyTable.tableName
+        COMPANY_TABLE: companyTable.tableName
       }
     });
     //#endregion
