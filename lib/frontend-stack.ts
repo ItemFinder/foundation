@@ -8,13 +8,14 @@ export class FrontendStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const agreementIdTable = new dynamodb.TableV2(this, 'AgreementIdTable', {
+    //#region Company Database Setup
+    const companyTable = new dynamodb.TableV2(this, 'CompanyTable', {
       partitionKey: { name: 'email', type: dynamodb.AttributeType.STRING },
       sortKey: { name: 'agreementId', type: dynamodb.AttributeType.STRING },
       removalPolicy: cdk.RemovalPolicy.DESTROY
     });
 
-    agreementIdTable.addGlobalSecondaryIndex({
+    companyTable.addGlobalSecondaryIndex({
       indexName: 'AgreementIdIndex',
       partitionKey: { name: 'agreementId', type: dynamodb.AttributeType.STRING }
     });
@@ -28,7 +29,7 @@ export class FrontendStack extends cdk.Stack {
           statements: [
             new iam.PolicyStatement({
               actions: ['dynamodb:Query'],
-              resources: [`${agreementIdTable.tableArn}/index/AgreementIdIndex`]
+              resources: [`${companyTable.tableArn}/index/AgreementIdIndex`]
             })
           ]
         })
@@ -41,14 +42,15 @@ export class FrontendStack extends cdk.Stack {
       code: lambda.Code.fromAsset('dist'),
       role: generateAgreementIdRole,
       environment: {
-        AGREEMENT_ID_TABLE: agreementIdTable.tableName
+        AGREEMENT_ID_TABLE: companyTable.tableName
       }
     });
+    //#endregion
 
-    new cdk.CfnOutput(this, 'AgreementIdTableName', {
-      key: 'AgreementIdTableName',
-      value: agreementIdTable.tableName,
-      description: 'The name of the DynamoDB table for storing agreement IDs'
+    new cdk.CfnOutput(this, 'CompanyTableName', {
+      key: 'CompanyTableName',
+      value: companyTable.tableName,
+      description: 'The name of the DynamoDB table for storing registered companies'
     });
 
     new cdk.CfnOutput(this, 'GenerateAgreementIdFunctionName', {
