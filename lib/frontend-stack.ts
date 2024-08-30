@@ -68,7 +68,7 @@ export class FrontendStack extends cdk.Stack {
       runtime: lambda.Runtime.NODEJS_20_X,
       handler: 'index.handler',
       code: lambda.Code.fromAsset('dist/complete-company-registration'),
-      role: generateAgreementIdRole,
+      role: completeCompanyRegistrationRole,
       environment: {
         COMPANY_TABLE: companyTable.tableName
       }
@@ -156,7 +156,7 @@ export class FrontendStack extends cdk.Stack {
       runtime: lambda.Runtime.NODEJS_20_X,
       handler: 'index.handler',
       code: lambda.Code.fromAsset('dist/check-confirmation'),
-      role: addCompanyInfoRole,
+      role: checkConfirmationRole,
       environment: {
         COMPANY_TABLE: companyTable.tableName
       }
