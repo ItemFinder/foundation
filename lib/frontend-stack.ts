@@ -193,7 +193,7 @@ export class FrontendStack extends cdk.Stack {
     const companyRegistrationStateMachine = new sfn.StateMachine(this, 'CompanyRegistrationStateMachine', {
       stateMachineName: 'CompanyRegistrationStateMachine',
       definitionBody: sfn.DefinitionBody.fromChainable(outboundChain),
-      timeout: cdk.Duration.minutes(2)
+      timeout: cdk.Duration.minutes(10)
     });
 
     //#endregion
