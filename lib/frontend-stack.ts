@@ -41,7 +41,7 @@ export class FrontendStack extends cdk.Stack {
     const generateAgreementId = new lambda.Function(this, 'GenerateAgreementId', {
       runtime: lambda.Runtime.NODEJS_20_X,
       handler: 'index.handler',
-      code: lambda.Code.fromAsset('dist/generate-agreement-id'),
+      code: lambda.Code.fromAsset('dist/registration/generate-agreement-id'),
       role: generateAgreementIdRole,
       environment: {
         COMPANY_TABLE: companyTable.tableName
@@ -67,7 +67,7 @@ export class FrontendStack extends cdk.Stack {
     const completeCompanyRegistration = new lambda.Function(this, 'CompleteCompanyRegistration', {
       runtime: lambda.Runtime.NODEJS_20_X,
       handler: 'index.handler',
-      code: lambda.Code.fromAsset('dist/complete-company-registration'),
+      code: lambda.Code.fromAsset('dist/registration/complete-company-registration'),
       role: completeCompanyRegistrationRole,
       environment: {
         COMPANY_TABLE: companyTable.tableName
@@ -93,7 +93,7 @@ export class FrontendStack extends cdk.Stack {
     const checkAgreementId = new lambda.Function(this, 'CheckAgreementId', {
       runtime: lambda.Runtime.NODEJS_20_X,
       handler: 'index.handler',
-      code: lambda.Code.fromAsset('dist/check-agreement-id'),
+      code: lambda.Code.fromAsset('dist/registration/check-agreement-id'),
       role: checkAgreementIdRole,
       environment: {
         COMPANY_TABLE: companyTable.tableName
@@ -124,7 +124,7 @@ export class FrontendStack extends cdk.Stack {
     const addCompanyInfo = new lambda.Function(this, 'AddCompanyInfo', {
       runtime: lambda.Runtime.NODEJS_20_X,
       handler: 'index.handler',
-      code: lambda.Code.fromAsset('dist/add-company-info'),
+      code: lambda.Code.fromAsset('dist/registration/add-company-info'),
       role: addCompanyInfoRole,
       environment: {
         COMPANY_TABLE: companyTable.tableName
@@ -155,7 +155,7 @@ export class FrontendStack extends cdk.Stack {
     const checkConfirmation = new lambda.Function(this, 'CheckConfirmation', {
       runtime: lambda.Runtime.NODEJS_20_X,
       handler: 'index.handler',
-      code: lambda.Code.fromAsset('dist/check-confirmation'),
+      code: lambda.Code.fromAsset('dist/registration/check-confirmation'),
       role: checkConfirmationRole,
       environment: {
         COMPANY_TABLE: companyTable.tableName
