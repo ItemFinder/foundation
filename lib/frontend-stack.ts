@@ -173,6 +173,17 @@ export class FrontendStack extends cdk.Stack {
       time: sfn.WaitTime.duration(cdk.Duration.seconds(10))
     });
 
+    const incrementCounter = new sfn.Pass(scope, 'IncrementCounter', {
+      resultPath: '$.counter',
+      parameters: {
+        'counter.$': 'States.MathAdd($.counter, 1)'
+      }
+    });
+
+    const checkCounter = new sfn.Choice(scope, 'CheckCounter')
+      .when(sfn.Condition.numberGreaterThanEquals('$.counter', 10), endstate)
+      .otherwise(wait10s.next(checkConfirmationTask));
+
     // prettier-ignore
     const outboundChain = sfn.Chain.start(
       checkAgreementIdTask
@@ -183,7 +194,7 @@ export class FrontendStack extends cdk.Stack {
           .next(checkConfirmationTask
             .next(new sfn.Choice(scope, 'IsCompanyRegistrationDone?')
               .when(sfn.Condition.booleanEquals('$.output.companyRegistrationDone', true), endstate)
-              .otherwise(wait10s.next(checkConfirmationTask))
+              .otherwise(incrementCounter.next(checkCounter))
             )
           )
         )
