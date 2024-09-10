@@ -62,9 +62,14 @@ export class CognitoStack extends cdk.Stack {
         scopes: [cognito.OAuthScope.EMAIL, cognito.OAuthScope.OPENID, cognito.OAuthScope.PROFILE],
         callbackUrls: [
           'https://zuqv3m7eo9.execute-api.eu-north-1.amazonaws.com/auth/callback/cognito',
-          'http://localhost:5173/auth/callback/cognito'
+          'http://localhost:5173/auth/callback/cognito',
+          'http://localhost:4173/auth/callback/cognito'
         ],
-        logoutUrls: ['https://localhost:5173']
+        logoutUrls: [
+          'http://localhost:5173',
+          'http://localhost:4173',
+          'https://zuqv3m7eo9.execute-api.eu-north-1.amazonaws.com'
+        ]
       },
 
       preventUserExistenceErrors: true
@@ -77,4 +82,3 @@ export class CognitoStack extends cdk.Stack {
     });
   }
 }
-  
