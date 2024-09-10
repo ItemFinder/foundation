@@ -48,153 +48,153 @@ export class FrontendStack extends cdk.Stack {
       }
     });
 
-    const completeCompanyRegistrationRole = new iam.Role(this, 'CompleteCompanyRegistrationRole', {
-      assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
-      description: 'Role for the Lambda function that completes the company registration',
-      managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole')],
-      inlinePolicies: {
-        aggrementTableQuery: new iam.PolicyDocument({
-          statements: [
-            new iam.PolicyStatement({
-              actions: ['dynamodb:UpdateItem'],
-              resources: [companyTable.tableArn]
-            })
-          ]
-        })
-      }
-    });
+    // const completeCompanyRegistrationRole = new iam.Role(this, 'CompleteCompanyRegistrationRole', {
+    //   assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
+    //   description: 'Role for the Lambda function that completes the company registration',
+    //   managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole')],
+    //   inlinePolicies: {
+    //     aggrementTableQuery: new iam.PolicyDocument({
+    //       statements: [
+    //         new iam.PolicyStatement({
+    //           actions: ['dynamodb:UpdateItem'],
+    //           resources: [companyTable.tableArn]
+    //         })
+    //       ]
+    //     })
+    //   }
+    // });
 
-    const completeCompanyRegistration = new lambda.Function(this, 'CompleteCompanyRegistration', {
-      runtime: lambda.Runtime.NODEJS_20_X,
-      handler: 'index.handler',
-      code: lambda.Code.fromAsset('dist/registration/complete-company-registration'),
-      role: completeCompanyRegistrationRole,
-      environment: {
-        COMPANY_TABLE: companyTable.tableName
-      }
-    });
+    // const completeCompanyRegistration = new lambda.Function(this, 'CompleteCompanyRegistration', {
+    //   runtime: lambda.Runtime.NODEJS_20_X,
+    //   handler: 'index.handler',
+    //   code: lambda.Code.fromAsset('dist/registration/complete-company-registration'),
+    //   role: completeCompanyRegistrationRole,
+    //   environment: {
+    //     COMPANY_TABLE: companyTable.tableName
+    //   }
+    // });
 
-    const checkAgreementIdRole = new iam.Role(this, 'CheckAgreementIdRole', {
-      assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
-      description: 'Role for the Lambda function that check for an agreement ID in the database',
-      managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole')],
-      inlinePolicies: {
-        aggrementTableQuery: new iam.PolicyDocument({
-          statements: [
-            new iam.PolicyStatement({
-              actions: ['dynamodb:Query'],
-              resources: [companyTable.tableArn, `${companyTable.tableArn}/index/AgreementIdIndex`]
-            })
-          ]
-        })
-      }
-    });
+    // const checkAgreementIdRole = new iam.Role(this, 'CheckAgreementIdRole', {
+    //   assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
+    //   description: 'Role for the Lambda function that check for an agreement ID in the database',
+    //   managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole')],
+    //   inlinePolicies: {
+    //     aggrementTableQuery: new iam.PolicyDocument({
+    //       statements: [
+    //         new iam.PolicyStatement({
+    //           actions: ['dynamodb:Query'],
+    //           resources: [companyTable.tableArn, `${companyTable.tableArn}/index/AgreementIdIndex`]
+    //         })
+    //       ]
+    //     })
+    //   }
+    // });
 
-    const checkAgreementId = new lambda.Function(this, 'CheckAgreementId', {
-      runtime: lambda.Runtime.NODEJS_20_X,
-      handler: 'index.handler',
-      code: lambda.Code.fromAsset('dist/registration/check-agreement-id'),
-      role: checkAgreementIdRole,
-      environment: {
-        COMPANY_TABLE: companyTable.tableName
-      }
-    });
+    // const checkAgreementId = new lambda.Function(this, 'CheckAgreementId', {
+    //   runtime: lambda.Runtime.NODEJS_20_X,
+    //   handler: 'index.handler',
+    //   code: lambda.Code.fromAsset('dist/registration/check-agreement-id'),
+    //   role: checkAgreementIdRole,
+    //   environment: {
+    //     COMPANY_TABLE: companyTable.tableName
+    //   }
+    // });
 
-    const checkAgreementIdTask = new tasks.LambdaInvoke(this, 'CheckAgreementIdTask', {
-      lambdaFunction: checkAgreementId,
-      outputPath: '$.Payload'
-    });
+    // const checkAgreementIdTask = new tasks.LambdaInvoke(this, 'CheckAgreementIdTask', {
+    //   lambdaFunction: checkAgreementId,
+    //   outputPath: '$.Payload'
+    // });
 
-    const addCompanyInfoRole = new iam.Role(this, 'AddCompanyInfoRole', {
-      assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
-      description: 'Role for the Lambda function updates the company information in the database',
-      managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole')],
-      inlinePolicies: {
-        aggrementTableQuery: new iam.PolicyDocument({
-          statements: [
-            new iam.PolicyStatement({
-              actions: ['dynamodb:UpdateItem'],
-              resources: [companyTable.tableArn]
-            })
-          ]
-        })
-      }
-    });
+    // const addCompanyInfoRole = new iam.Role(this, 'AddCompanyInfoRole', {
+    //   assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
+    //   description: 'Role for the Lambda function updates the company information in the database',
+    //   managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole')],
+    //   inlinePolicies: {
+    //     aggrementTableQuery: new iam.PolicyDocument({
+    //       statements: [
+    //         new iam.PolicyStatement({
+    //           actions: ['dynamodb:UpdateItem'],
+    //           resources: [companyTable.tableArn]
+    //         })
+    //       ]
+    //     })
+    //   }
+    // });
 
-    const addCompanyInfo = new lambda.Function(this, 'AddCompanyInfo', {
-      runtime: lambda.Runtime.NODEJS_20_X,
-      handler: 'index.handler',
-      code: lambda.Code.fromAsset('dist/registration/add-company-info'),
-      role: addCompanyInfoRole,
-      environment: {
-        COMPANY_TABLE: companyTable.tableName
-      }
-    });
+    // const addCompanyInfo = new lambda.Function(this, 'AddCompanyInfo', {
+    //   runtime: lambda.Runtime.NODEJS_20_X,
+    //   handler: 'index.handler',
+    //   code: lambda.Code.fromAsset('dist/registration/add-company-info'),
+    //   role: addCompanyInfoRole,
+    //   environment: {
+    //     COMPANY_TABLE: companyTable.tableName
+    //   }
+    // });
 
-    const addCompanyInfoTask = new tasks.LambdaInvoke(this, 'AddCompanyInfoTask', {
-      lambdaFunction: addCompanyInfo,
-      outputPath: '$.Payload'
-    });
+    // const addCompanyInfoTask = new tasks.LambdaInvoke(this, 'AddCompanyInfoTask', {
+    //   lambdaFunction: addCompanyInfo,
+    //   outputPath: '$.Payload'
+    // });
 
-    const checkConfirmationRole = new iam.Role(this, 'CheckConfirmationRole', {
-      assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
-      description: 'Role for the Lambda function checks if the company registration is complete',
-      managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole')],
-      inlinePolicies: {
-        aggrementTableQuery: new iam.PolicyDocument({
-          statements: [
-            new iam.PolicyStatement({
-              actions: ['dynamodb:Query'],
-              resources: [companyTable.tableArn, `${companyTable.tableArn}/index/AgreementIdIndex`]
-            })
-          ]
-        })
-      }
-    });
+    // const checkConfirmationRole = new iam.Role(this, 'CheckConfirmationRole', {
+    //   assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
+    //   description: 'Role for the Lambda function checks if the company registration is complete',
+    //   managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole')],
+    //   inlinePolicies: {
+    //     aggrementTableQuery: new iam.PolicyDocument({
+    //       statements: [
+    //         new iam.PolicyStatement({
+    //           actions: ['dynamodb:Query'],
+    //           resources: [companyTable.tableArn, `${companyTable.tableArn}/index/AgreementIdIndex`]
+    //         })
+    //       ]
+    //     })
+    //   }
+    // });
 
-    const checkConfirmation = new lambda.Function(this, 'CheckConfirmation', {
-      runtime: lambda.Runtime.NODEJS_20_X,
-      handler: 'index.handler',
-      code: lambda.Code.fromAsset('dist/registration/check-confirmation'),
-      role: checkConfirmationRole,
-      environment: {
-        COMPANY_TABLE: companyTable.tableName
-      }
-    });
+    // const checkConfirmation = new lambda.Function(this, 'CheckConfirmation', {
+    //   runtime: lambda.Runtime.NODEJS_20_X,
+    //   handler: 'index.handler',
+    //   code: lambda.Code.fromAsset('dist/registration/check-confirmation'),
+    //   role: checkConfirmationRole,
+    //   environment: {
+    //     COMPANY_TABLE: companyTable.tableName
+    //   }
+    // });
 
-    const checkConfirmationTask = new tasks.LambdaInvoke(this, 'CheckConfirmationTask', {
-      lambdaFunction: checkConfirmation,
-      outputPath: '$.Payload'
-    });
+    // const checkConfirmationTask = new tasks.LambdaInvoke(this, 'CheckConfirmationTask', {
+    //   lambdaFunction: checkConfirmation,
+    //   outputPath: '$.Payload'
+    // });
 
-    const endstate = new sfn.Pass(this, 'Endstate');
+    // const endstate = new sfn.Pass(this, 'Endstate');
 
-    const wait10s = new sfn.Wait(scope, 'Wait10s', {
-      time: sfn.WaitTime.duration(cdk.Duration.seconds(10))
-    });
+    // const wait10s = new sfn.Wait(scope, 'Wait10s', {
+    //   time: sfn.WaitTime.duration(cdk.Duration.seconds(10))
+    // });
 
-    // prettier-ignore
-    const outboundChain = sfn.Chain.start(
-      checkAgreementIdTask
-      .next(new sfn.Choice(scope, 'IsAgreementIdPresent?')
-        .when(sfn.Condition.booleanEquals('$.output.agreementIdFound', false), endstate)
-        .otherwise(
-          addCompanyInfoTask
-          .next(checkConfirmationTask
-            .next(new sfn.Choice(scope, 'IsCompanyRegistrationDone?')
-              .when(sfn.Condition.booleanEquals('$.output.companyRegistrationDone', true), endstate)
-              .otherwise(wait10s.next(checkConfirmationTask))
-            )
-          )
-        )
-      )
-    );
+    // // prettier-ignore
+    // const outboundChain = sfn.Chain.start(
+    //   checkAgreementIdTask
+    //   .next(new sfn.Choice(scope, 'IsAgreementIdPresent?')
+    //     .when(sfn.Condition.booleanEquals('$.output.agreementIdFound', false), endstate)
+    //     .otherwise(
+    //       addCompanyInfoTask
+    //       .next(checkConfirmationTask
+    //         .next(new sfn.Choice(scope, 'IsCompanyRegistrationDone?')
+    //           .when(sfn.Condition.booleanEquals('$.output.companyRegistrationDone', true), endstate)
+    //           .otherwise(wait10s.next(checkConfirmationTask))
+    //         )
+    //       )
+    //     )
+    //   )
+    // );
 
-    const companyRegistrationStateMachine = new sfn.StateMachine(this, 'CompanyRegistrationStateMachine', {
-      stateMachineName: 'CompanyRegistrationStateMachine',
-      definitionBody: sfn.DefinitionBody.fromChainable(outboundChain),
-      timeout: cdk.Duration.minutes(10)
-    });
+    // const companyRegistrationStateMachine = new sfn.StateMachine(this, 'CompanyRegistrationStateMachine', {
+    //   stateMachineName: 'CompanyRegistrationStateMachine',
+    //   definitionBody: sfn.DefinitionBody.fromChainable(outboundChain),
+    //   timeout: cdk.Duration.minutes(10)
+    // });
 
     //#endregion
 
@@ -210,34 +210,34 @@ export class FrontendStack extends cdk.Stack {
       description: 'The name of the Lambda function for generating agreement IDs'
     });
 
-    new cdk.CfnOutput(this, 'CheckAgreementIdFunctionName', {
-      key: 'CheckAgreementIdFunctionName',
-      value: checkAgreementId.functionName,
-      description: 'The name of the Lambda function for checking agreement IDs'
-    });
+    // new cdk.CfnOutput(this, 'CheckAgreementIdFunctionName', {
+    //   key: 'CheckAgreementIdFunctionName',
+    //   value: checkAgreementId.functionName,
+    //   description: 'The name of the Lambda function for checking agreement IDs'
+    // });
 
-    new cdk.CfnOutput(this, 'AddCompanyInfoFunctionName', {
-      key: 'AddCompanyInfoFunctionName',
-      value: addCompanyInfo.functionName,
-      description: 'The name of the Lambda function for adding company information'
-    });
+    // new cdk.CfnOutput(this, 'AddCompanyInfoFunctionName', {
+    //   key: 'AddCompanyInfoFunctionName',
+    //   value: addCompanyInfo.functionName,
+    //   description: 'The name of the Lambda function for adding company information'
+    // });
 
-    new cdk.CfnOutput(this, 'CheckConfirmationFunctionName', {
-      key: 'CheckConfirmationFunctionName',
-      value: checkConfirmation.functionName,
-      description: 'The name of the Lambda function for checking company registration'
-    });
+    // new cdk.CfnOutput(this, 'CheckConfirmationFunctionName', {
+    //   key: 'CheckConfirmationFunctionName',
+    //   value: checkConfirmation.functionName,
+    //   description: 'The name of the Lambda function for checking company registration'
+    // });
 
-    new cdk.CfnOutput(this, 'CompleteCompanyRegistrationFunctionName', {
-      key: 'CheckConfirCompleteCompanyRegistrationFunctionNamemationFunctionName',
-      value: completeCompanyRegistration.functionName,
-      description: 'The name of the Lambda function that completes company registration'
-    });
+    // new cdk.CfnOutput(this, 'CompleteCompanyRegistrationFunctionName', {
+    //   key: 'CheckConfirCompleteCompanyRegistrationFunctionNamemationFunctionName',
+    //   value: completeCompanyRegistration.functionName,
+    //   description: 'The name of the Lambda function that completes company registration'
+    // });
 
-    new cdk.CfnOutput(this, 'CompanyRegistrationStateMachineArn', {
-      key: 'CompanyRegistrationStateMachineArn',
-      value: companyRegistrationStateMachine.stateMachineArn,
-      description: 'The ARN of the Step Functions state machine for company registration'
-    });
+    // new cdk.CfnOutput(this, 'CompanyRegistrationStateMachineArn', {
+    //   key: 'CompanyRegistrationStateMachineArn',
+    //   value: companyRegistrationStateMachine.stateMachineArn,
+    //   description: 'The ARN of the Step Functions state machine for company registration'
+    // });
   }
 }
