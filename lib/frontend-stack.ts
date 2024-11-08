@@ -21,7 +21,18 @@ export class FrontendStack extends cdk.Stack {
       indexName: 'AgreementIdIndex',
       partitionKey: { name: 'agreementId', type: dynamodb.AttributeType.STRING }
     });
+    //#endregion
 
+    //#region User Setting Database Setup
+
+    const userSettingTable = new dynamodb.TableV2(this, 'UserSettingTable', {
+      partitionKey: { name: 'email', type: dynamodb.AttributeType.STRING },
+      removalPolicy: cdk.RemovalPolicy.DESTROY
+    });
+
+    //#endregion
+
+    //#region Company Registration State Machine
     const generateAgreementIdRole = new iam.Role(this, 'GenerateAgreementIdRole', {
       assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
       description: 'Role for the Lambda function that generates agreement IDs',
@@ -202,6 +213,12 @@ export class FrontendStack extends cdk.Stack {
       key: 'CompanyTableName',
       value: companyTable.tableName,
       description: 'The name of the DynamoDB table for storing registered companies'
+    });
+
+    new cdk.CfnOutput(this, 'UserSettingsTableName', {
+      key: 'UserSettingsTableName',
+      value: userSettingTable.tableName,
+      description: 'The name of the DynamoDB table for storing user settings'
     });
 
     new cdk.CfnOutput(this, 'GenerateAgreementIdFunctionName', {
