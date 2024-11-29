@@ -12,7 +12,7 @@ export class FrontendStack extends cdk.Stack {
 
     //#region Company Database Setup
     const companyTable = new dynamodb.TableV2(this, 'CompanyTable', {
-      partitionKey: { name: 'email', type: dynamodb.AttributeType.STRING },
+      partitionKey: { name: 'userId', type: dynamodb.AttributeType.STRING },
       sortKey: { name: 'agreementId', type: dynamodb.AttributeType.STRING },
       removalPolicy: cdk.RemovalPolicy.DESTROY
     });
@@ -26,7 +26,7 @@ export class FrontendStack extends cdk.Stack {
     //#region User Setting Database Setup
 
     const userSettingTable = new dynamodb.TableV2(this, 'UserSettingTable', {
-      partitionKey: { name: 'email', type: dynamodb.AttributeType.STRING },
+      partitionKey: { name: 'userId', type: dynamodb.AttributeType.STRING },
       removalPolicy: cdk.RemovalPolicy.DESTROY
     });
 
